@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小雪致瑶瑶 | 岁寒有暖，相逢有幸</title>
+    <!-- 本地引入Tailwind -->
+    <link rel="stylesheet" href="./css/tailwind.min.css">
+    
+    <style>
+        /* 雪花动画 */
+        .snowflake {
+            position: absolute;
+            color: white;
+            opacity: 0.8;
+            animation: fall linear infinite;
+            pointer-events: none;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        /* 爱心动画 */
+        .heart {
+            position: absolute;
+            color: #FF6B8B;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 50;
+            animation: floatUp ease-in-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg) scale(0.8); opacity: 0; }
+        }
+        
+        /* 照片悬停效果 */
+        .photo-item {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .photo-item:hover {
+            transform: scale(1.05); /* 照片浮动效果 */
+        }
+        
+        /* 按钮样式 */
+        .btn-primary {
+            background-color: #81D4FA;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            border: none;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: rgba(129, 212, 250, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        /* 弹窗样式 */
+        .popup-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+            z-index: 100;
+        }
+        .popup-card.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 90;
+        }
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* 加载动画 */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, #F5F9FF, #E6EEFF);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .loader-heart {
+            font-size: 4rem;
+            color: #FF6B8B;
+            animation: rotateHeart 2s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+        @keyframes rotateHeart {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 页面切换样式（核心） */
+        .page {
+            display: none; /* 默认隐藏所有页面 */
+            animation: fadeIn 0.5s ease;
+        }
+        .page.active {
+            display: block; /* 只显示当前激活的页面 */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 文本装饰样式 */
+        .text-shadow-sm {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+        .bless-text {
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-winter-100 to-winter-200">
+    <!-- 加载动画 -->
+    <div class="loader-container" id="loader">
+        <div class="loader-heart">❤️</div>
+        <div class="loader-text text-winter-800 font-medium">正在为瑶瑶准备冬日惊喜...</div>
+    </div>
+
+    <!-- 雪花背景 -->
+    <div id="snowContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+    
+    <!-- 主内容容器 -->
+    <div id="content" class="container mx-auto max-w-2xl p-4 py-8">
+        <!-- 第一页（小雪主祝福） -->
+        <div id="page1" class="page active bg-white/90 rounded-2xl p-6 md:p-8 shadow-xl">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-snow-dark/20 text-snow-dark mb-4">
+                    <i class="fa fa-snowflake-o text-2xl"></i>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold text-winter-800 text-shadow-sm">小雪启序，岁暖情长</h1>
+            </div>
+            
+            <!-- 核心祝福文本 -->
+            <div class="bless-text text-center mb-10 text-gray-700">
+                <p class="text-xl md:text-2xl mb-4 font-medium text-winter-800">致瑶瑶</p>
+                <p class="mb-3">当第一片雪花轻吻人间，冬的故事便有了温柔开篇</p>
+                <p class="mb-3">想把世间所有的暖，都打包给你——</p>
+                <p class="mb-3">愿寒来暑往，你总有良人相伴；</p>
+                <p class="mb-3">愿岁暮天寒，你常有温粥暖饭；</p>
+                <p>愿往后的每一个日子，都如小雪般纯净，如遇见般欣喜</p>
+            </div>
+            
+            <!-- 相识纪念 -->
+            <div class="bg-snow-light/30 rounded-xl p-4 mb-8 text-center">
+                <p class="text-gray-600 mb-2">与你相识的时光，是岁月最温柔的馈赠</p>
+                <p class="text-winter-800 font-bold text-lg">每一个朝夕，都值得珍藏</p>
+            </div>
+            
+            <!-- 照片区域 -->
+            <div class="grid grid-cols-2 gap-3 mb-8">
+                <div class="photo-item aspect-square">
+                    <img src="./images/ly1.jpg" alt="和瑶瑶的美好瞬间1" class="w-full h-full object-cover">
+                </div>
+                <div class="photo-item aspect-square">
+                    <img src="./images/ly2.jpg" alt="和瑶瑶的美好瞬间2" class="w-full h-full object-cover">
+                </div>
+                <div class="photo-item aspect-square">
+                    <img src="./images/ly3.jpg" alt="和瑶瑶的美好瞬间3" class="w-full h-full object-cover">
+                </div>
+                <div class="photo-item aspect-square">
+                    <img src="./images/ly4.jpg" alt="和瑶瑶的美好瞬间4" class="w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <!-- 跳转按钮 -->
+            <div class="text-center">
+                <button id="toPage2Btn" class="btn-primary">解锁更多温柔絮语</button>
+            </div>
+        </div>
+        
+        <!-- 第二页（生活小确幸+深度祝福） -->
+        <div id="page2" class="page bg-white/90 rounded-2xl p-6 md:p-8 shadow-xl">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-snow-dark/20 text-snow-dark mb-4">
+                    <i class="fa fa-heart-o text-2xl"></i>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold text-winter-800 text-shadow-sm">岁月向暖，有你皆甜</h1>
+            </div>
+            
+            <!-- 生活感悟+祝福 -->
+            <div class="bless-text text-center mb-10 text-gray-700">
+                <p class="mb-4">世界很大，人海茫茫，能遇见你，是我全部的幸运与欢喜</p>
+                <p class="mb-4">喜欢你，是不动声色却满溢心底的温柔</p>
+                <p class="mb-4">愿你往后：</p>
+                <p class="mb-2">春有百花秋有月，夏有凉风冬有雪；</p>
+                <p class="mb-2">心中有爱，眼底有光，脚下有路；</p>
+                <p>无论晴雨，都能被世界温柔以待，都能活得自在明亮</p>
+            </div>
+            
+            <!-- 第二页照片 -->
+            <div class="grid grid-cols-2 gap-3 mb-8">
+                <div class="photo-item aspect-square">
+                    <img src="./images/ly5.jpg" alt="瑶瑶的可爱瞬间5" class="w-full h-full object-cover">
+                </div>
+                <div class="photo-item aspect-square">
+                    <img src="./images/ly6.jpg" alt="瑶瑶的可爱瞬间6" class="w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <!-- 暖心短句 -->
+            <div class="grid grid-cols-2 gap-3 mb-8">
+                <div class="bg-winter-100 rounded-lg p-3 text-center">
+                    <p class="text-gray-700">你笑时，春光温柔</p>
+                </div>
+                <div class="bg-winter-100 rounded-lg p-3 text-center">
+                    <p class="text-gray-700">有你在，岁月无恙</p>
+                </div>
+                <div class="bg-winter-100 rounded-lg p-3 text-center">
+                    <p class="text-gray-700">日常平凡，因你出色</p>
+                </div>
+                <div class="bg-winter-100 rounded-lg p-3 text-center">
+                    <p class="text-gray-700">余生漫漫，幸而有你</p>
+                </div>
+            </div>
+            
+            <!-- 返回按钮 -->
+            <div class="text-center">
+                <button id="backToPage1Btn" class="btn-primary">回到初雪祝福</button>
+            </div>
+        </div>
+        
+        <!-- 弹窗 -->
+        <div class="overlay" id="overlay"></div>
+        <div class="popup-card bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-snow-dark/20 text-snow-dark mb-4">
+                    <i class="fa fa-snowflake-o text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 text-winter-800">小雪专属寄语</h3>
+                <p class="mb-5 text-gray-700">
+                    雪落无声，爱意有形<br>
+                    愿这个冬天，所有美好都如期而至<br>
+                    愿你被时光偏爱，永远温暖明亮
+                </p>
+                <button id="closePopup" class="btn-primary">珍藏这份温暖</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 强制隐藏加载动画（3秒后必进）
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('loader-hidden');
+            createSnowflakes(); // 显示雪花动画
+        }, 3000);
+
+        // 2. 雪花动画逻辑
+        function createSnowflakes() {
+            const container = document.getElementById('snowContainer');
+            // 创建50个雪花
+            for (let i = 0; i < 50; i++) {
+                const snow = document.createElement('div');
+                snow.className = 'snowflake';
+                snow.innerHTML = '❄️';
+                // 随机位置和大小
+                snow.style.left = Math.random() * 100 + 'vw';
+                snow.style.top = -10 + 'px';
+                snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                snow.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(snow);
+            }
+        }
+
+        // 3. 页面跳转逻辑（核心）
+        // 跳转到第二页
+        document.getElementById('toPage2Btn').addEventListener('click', () => {
+            document.getElementById('page1').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+            // 显示弹窗
+            document.querySelector('.popup-card').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        });
+
+        // 返回第一页
+        document.getElementById('backToPage1Btn').addEventListener('click', () => {
+            document.getElementById('page2').classList.remove('active');
+            document.getElementById('page1').classList.add('active');
+        });
+
+        // 4. 弹窗关闭逻辑
+        document.getElementById('closePopup').addEventListener('click', () => {
+            document.querySelector('.popup-card').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
+        // 点击遮罩关闭弹窗
+        document.getElementById('overlay').addEventListener('click', () => {
+            document.querySelector('.popup-card').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+    </script>
+</body>
+</html>
